@@ -22,6 +22,10 @@ Terminal video downloader. Paste a link, pick a quality, pick a folder. Powered 
 | --- | --- | --- |
 | ![home](docs/home.png) | ![proxy](docs/proxy.png) | ![quality](docs/quality.png) |
 
+| Destination folder |
+| --- |
+| ![destination](docs/destination.png) |
+
 ## Install
 
 ```bash
