@@ -1,0 +1,22 @@
+{
+  "name": "yesmike",
+  "version": "0.2.0",
+  "description": "paste a link, pick a quality, pick a folder. powered by yt-dlp.",
+  "type": "module",
+  "bin": {
+    "yesmike": "yesmike.mjs"
+  },
+  "scripts": {
+    "start": "node yesmike.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "ffmpeg-static": "^5.3.0",
+    "htm": "^3.1.1",
+    "ink": "^8.0.0",
+    "ink-text-input": "^6.0.0",
+    "react": "^19.3.1"
+  }
+}
