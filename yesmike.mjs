@@ -155,6 +155,8 @@ function normalizeProxy(v) {
 function cleanErr(stderr) {
   const lines = stderr.split('\n').map(l => l.trim()).filter(Boolean)
   const err = [...lines].reverse().find(l => l.startsWith('ERROR:')) ?? lines.at(-1) ?? ''
+  if (/Socks\w*Connection|10061|ProxyError/i.test(err) && /refused|10061|proxy/i.test(err))
+    return 'proxy refused the connection — is it running? (Tor Browser must be open and connected; ^P to change or turn off the proxy)'
   return err.replace(/^ERROR:\s*(\[[^\]]+\]\s*)?/, '')
 }
 
