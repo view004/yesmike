@@ -53,6 +53,66 @@ npm install
 
 Settings are stored in `~/.yesmike/config.json`, the yt-dlp binary in `~/.yesmike/bin`.
 
+## Screens
+
+Hand-drawn approximations of the UI (colors omitted).
+
+**1. Paste a link**
+
+```
+        ▓ █▀▀ █▀▀ █▄█ ▀█▀ █ █▀▀
+         ▀▀█ █▀  ▀▀█ █ █  █ █ █▀▀
+        ...
+
+   ╭─ Paste a link ─────────────────────────────╮
+   │ ❯ https://youtube.com/watch?v=…   ▄▄▄▄▄▄▄▄▄▄▄▄
+   ╰───────────────────────────────── ▀▀▀▀▀▀▀▀▀▀▀▀
+
+        ⇥ paste  ·  ^P proxy  ·  esc quit
+```
+
+**2. Pick a quality**
+
+```
+              Some video title
+        YouTube · 12:03 · Some Uploader
+
+        ╭────────────────────────────╮
+        │ ❯ ▶ 1080p  ~210 MB         │
+        │   ▶ 720p   ~120 MB         │
+        │   ▶ 480p   ~70 MB          │
+        │   ♪ mp3 audio  ~11 MB      │
+        ╰────────────────────────────╯
+```
+
+**3. Proxy settings** (`Ctrl+P`)
+
+```
+              Proxy for all downloads
+              ● listening   ○ not running
+
+        ╭────────────────────────────────────────────╮
+        │   · off (direct)                           │
+        │ ❯ ● Tor Browser  127.0.0.1:9150          ✓ │
+        │   ○ Tor service  127.0.0.1:9050            │
+        │   ○ WARP proxy mode  127.0.0.1:40000       │
+        │   · custom…                                │
+        ╰────────────────────────────────────────────╯
+```
+
+Pick `custom…` to type your own, e.g. `socks5://127.0.0.1:1080` or `http://user:pass@host:8080`.
+When a proxy is set, the home screen shows `● proxy active · Tor Browser` (green) or `○ proxy not reachable` (red).
+
+**4. Downloading**
+
+```
+        Some video title · 1080p → ~/Downloads
+
+        ████████████████░░░░░░░░░░░░░░░░░░░░░░░░   42%
+
+             3.2 MB/s  ·  00:41 left
+```
+
 ## Using Tor
 
 Start Tor Browser (port 9150) or the Tor service (9050), press `Ctrl+P`, pick the matching preset. A green `● proxy active` line confirms the port is listening.
