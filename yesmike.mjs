@@ -120,7 +120,7 @@ async function findFfmpeg() {
   return undefined
 }
 
-const extra = {browser: undefined, proxy: loadConfig().proxy}
+const extra = {browser: undefined, proxy: undefined}
 const proxyArgs = () => (extra.proxy ? ['--proxy', extra.proxy] : [])
 const authArgs = () => [...(extra.browser ? ['--cookies-from-browser', extra.browser] : []), ...proxyArgs()]
 
@@ -543,7 +543,6 @@ function App({initialUrl, clipboardUrl, onOutcome}) {
   const applyProxy = v => {
     extra.proxy = v || undefined
     setProxy(v)
-    saveConfig({proxy: v})
     setPhase({name: 'input'})
   }
   const chooseProxy = i => {
@@ -739,7 +738,7 @@ if (pi >= 0) {
     process.exit(1)
   }
   extra.proxy = v || undefined
-  saveConfig({proxy: v})
+
 }
 const initialUrl = argv.find(isUrl)
 

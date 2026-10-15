@@ -51,7 +51,7 @@ npm install
 | `Esc` | back |
 | Click logo | back to home |
 
-Settings are stored in `~/.yesmike/config.json`, the yt-dlp binary in `~/.yesmike/bin`.
+The proxy is off by default on every launch (set it with `Ctrl+P` or `--proxy`). Settings are stored in `~/.yesmike/config.json`, the yt-dlp binary in `~/.yesmike/bin`.
 
 ## Using Tor
 
