@@ -183,17 +183,17 @@ function buildChoices(info) {
   const formats = info.formats ?? []
   const hasV = f => f.vcodec && f.vcodec !== 'none'
   const hasA = f => f.acodec && f.acodec !== 'none'
-  const size = f => f?.filesize ?? f?.filesize_approx
+  const size = f => f?.filesize ?? f?.filesize_approx ?? (f?.tbr && info.duration ? Math.round(f.tbr * info.duration * 125) : undefined)
   const bestAudio = formats.filter(f => hasA(f) && !hasV(f)).sort((a, b) => (b.abr ?? b.tbr ?? 0) - (a.abr ?? a.tbr ?? 0))[0]
   const heights = [...new Set(formats.filter(f => hasV(f) && f.height).map(f => f.height))].sort((a, b) => b - a).slice(0, 8)
 
   const choices = heights.map(h => {
     const v = formats.filter(f => hasV(f) && f.height === h).sort((a, b) => (size(b) ?? 0) - (size(a) ?? 0))[0]
     const total = (size(v) ?? 0) + (hasA(v) ? 0 : size(bestAudio) ?? 0)
-    return {label: `${h}p${total ? `  ~${fmtBytes(total)}` : ''}`, kind: 'video', args: ['-f', `bv*[height<=${h}]+ba/b[height<=${h}]/b`, '--merge-output-format', 'mp4']}
+    return {label: `${h}p${total ? `  ~${fmtBytes(total)}` : ''}`, kind: 'video', size: total || undefined, args: ['-f', `bv*[height<=${h}]+ba/b[height<=${h}]/b`, '--merge-output-format', 'mp4']}
   })
   if (!choices.length) choices.push({label: 'best quality', kind: 'video', args: ['-f', 'bv*+ba/b']})
-  choices.push({label: `mp3 audio${size(bestAudio) ? `  ~${fmtBytes(size(bestAudio))}` : ''}`, kind: 'audio', args: ['-x', '--audio-format', 'mp3']})
+  choices.push({label: `mp3 audio${size(bestAudio) ? `  ~${fmtBytes(size(bestAudio))}` : ''}`, kind: 'audio', size: size(bestAudio), args: ['-x', '--audio-format', 'mp3']})
   return choices
 }
 
@@ -212,6 +212,8 @@ function download({ytdlp, url, choice, outDir, ffmpeg, extraArgs = []}, {onProgr
     let buf = ''
     let err = ''
     let filepath
+    let prev = 0
+    let base = 0 // bytes of already finished streams (video then audio)
     const num = s => (Number.isFinite(Number(s)) && s !== 'NA' ? Number(s) : undefined)
     c.stdout.on('data', d => {
       buf += d
@@ -222,7 +224,11 @@ function download({ytdlp, url, choice, outDir, ffmpeg, extraArgs = []}, {onProgr
           const [, dl, total, est, speed, eta, fi, fc] = line.split(' ')
           // HLS/DASH report fragments instead of bytes — use them for the percentage
           const frag = num(fc) && num(fi) !== undefined ? num(fi) / num(fc) : undefined
-          onProgress({downloaded: num(dl) ?? 0, total: num(total) ?? num(est), frag, speed: num(speed), eta: num(eta)})
+          const d = num(dl) ?? 0
+          if (d < prev * 0.9) base += prev
+          prev = d
+          const overall = choice.size ? Math.min(0.99, (base + d) / choice.size) : undefined
+          onProgress({downloaded: d, total: num(total) ?? num(est), frag, overall, speed: num(speed), eta: num(eta)})
         } else if (/^\[(Merger|ExtractAudio|VideoConvertor|FixupM3u8|Fixup)/.test(line)) onProcessing()
         else if (line.trim() && !line.startsWith('[')) filepath = line.trim()
       }
@@ -690,8 +696,8 @@ function App({initialUrl, clipboardUrl, onOutcome}) {
           <${Gap} />
           ${phase.processing
             ? html`<${Bar} percent=${1} /><${Gap} /><${Text}><${Spin} /> processing…<//>`
-            : p?.total || p?.frag
-              ? html`<${Bar} percent=${p.total ? p.downloaded / p.total : p.frag} /><${Gap} /><${Text} dimColor>${`${p.speed ? fmtBytes(p.speed) + '/s' : ''}`.padStart(12)}  ${(p.eta ? fmtEta(p.eta) + ' left' : '').padEnd(12)}<//>`
+            : p?.total || p?.frag || p?.overall
+              ? html`<${Bar} percent=${p.total ? p.downloaded / p.total : p.frag ?? p.overall} /><${Gap} /><${Text} dimColor>${`${p.speed ? fmtBytes(p.speed) + '/s' : ''}`.padStart(12)}  ${(p.eta ? fmtEta(p.eta) + ' left' : '').padEnd(12)}<//>`
               : html`<${Text}><${Spin} /> ${phase.note ?? 'downloading…'} ${p ? fmtBytes(p.downloaded) : ''}<//>`}
         <//>
       `}
