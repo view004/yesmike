@@ -16,6 +16,12 @@ Terminal video downloader. Paste a link, pick a quality, pick a folder. Powered 
 - Windows 10/11
 - [Node.js](https://nodejs.org) 20+
 
+## Screenshots
+
+| Home | Proxy (`Ctrl+P`) | Quality picker |
+| --- | --- | --- |
+| ![home](docs/home.png) | ![proxy](docs/proxy.png) | ![quality](docs/quality.png) |
+
 ## Install
 
 ```bash
