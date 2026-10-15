@@ -6,7 +6,7 @@ Terminal video downloader. Paste a link, pick a quality, pick a folder. Powered 
 
 - Mouse and keyboard UI in the terminal
 - Quality picker (video / mp3), folder picker (native dialog)
-- Progress percentage, speed, ETA
+- Progress percentage, speed, ETA (estimated from format size when the site does not report a total)
 - Proxy support: SOCKS5 / HTTP, presets for Tor Browser (9150), Tor service (9050), Cloudflare WARP (40000), live "proxy active" status
 - Auto-retry on HTTP 403 (browser impersonation, yt-dlp self-update)
 - yt-dlp is downloaded automatically on first run; ffmpeg is bundled
@@ -61,11 +61,17 @@ npm install
 | `Esc` | back |
 | Click logo | back to home |
 
-The proxy is off by default on every launch (set it with `Ctrl+P` or `--proxy`). Settings are stored in `~/.yesmike/config.json`, the yt-dlp binary in `~/.yesmike/bin`.
+The proxy is off by default on every launch (set it with `Ctrl+P` or `--proxy`). The last download folder is stored in `~/.yesmike/config.json`, the yt-dlp binary in `~/.yesmike/bin`.
 
 ## Using Tor
 
 Start Tor Browser (port 9150) or the Tor service (9050), press `Ctrl+P`, pick the matching preset. A green `● proxy active` line confirms the port is listening.
+
+## Troubleshooting
+
+- **`proxy refused the connection`**: the proxy you selected is not running. Start Tor Browser (and click Connect) or turn the proxy off with `Ctrl+P`.
+- **HTTP 403**: yesmike retries with browser impersonation and a yt-dlp update automatically. If it still fails, run with `--browser chrome` to reuse your login cookies, or try a proxy.
+- **Logo cut off at the top**: make the terminal window taller.
 
 ## Disclaimer
 
